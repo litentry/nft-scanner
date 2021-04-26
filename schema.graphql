@@ -1,0 +1,6 @@
+type TokenHolder @entity {
+  id: ID!
+  contract: Bytes!
+  tokenId: BigInt!
+  owner: Bytes!
+}
