@@ -5,16 +5,16 @@ source:
   address: __contract_address__
   abi: __abi_name__
   startBlock: __start_block__
-  mapping:
-    kind: ethereum/events
-    apiVersion: 0.0.4
-    language: wasm/assemblyscript
-    entities:
-      - Transfer
-    abis:
-      - name: __abi_name__
-        file: __abi_file_path__
-    eventHandlers:
-      - event: Transfer(indexed address,indexed address,uint256)
-        handler: handleTransfer
-    file: __source_file_path__
+mapping:
+  kind: ethereum/events
+  apiVersion: 0.0.4
+  language: wasm/assemblyscript
+  entities:
+    - Transfer
+  abis:
+    - name: __abi_name__
+      file: __abi_file_path__
+  eventHandlers:
+    - event: Transfer(indexed address,indexed address,indexed uint256)
+      handler: handleTransfer
+  file: __source_file_path__

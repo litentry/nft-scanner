@@ -14,8 +14,6 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
         - Transfer
       abis:
         - name: WrappedMoonCatsRescue
@@ -23,32 +21,4 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/mapping.ts
-
-  - kind: ethereum/contract
-    name: CryptoPunksMarket
-    network: mainnet
-    source:
-      address: "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
-      abi: CryptoPunksMarket
-      startBlock: 3914495
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        # - Assign
-        - Transfer
-        # - PunkTransfer
-        # - PunkOffered
-        # - PunkBidEntered
-        # - PunkBidWithdrawn
-        # - PunkBought
-        # - PunkNoLongerForSale
-      abis:
-        - name: CryptoPunksMarket
-          file: ./abis/CryptoPunksMarket.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-      file: ./src/CryptoPunksMarketMapping.ts
+      file: ./src/WrappedMoonCatsRescueMapping.ts
