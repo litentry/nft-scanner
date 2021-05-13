@@ -22,3 +22,43 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/WrappedMoonCatsRescueMapping.ts
+  - kind: ethereum/contract
+    name: WrappedCryptoPunks
+    network: mainnet
+    source:
+      address: "0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6"
+      abi: WrappedCryptoPunks
+      startBlock: 11566926
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: WrappedCryptoPunks
+          file: ./abis/WrappedCryptoPunks.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/WrappedCryptoPunksMapping.ts
+  - kind: ethereum/contract
+    name: CryptoPunks
+    network: mainnet
+    source:
+      address: "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
+      abi: CryptoPunks
+      startBlock: 3914495
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: CryptoPunks
+          file: ./abis/CryptoPunks.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/CryptoPunksMapping.ts

@@ -15,6 +15,6 @@ mapping:
     - name: __abi_name__
       file: __abi_file_path__
   eventHandlers:
-    - event: Transfer(indexed address,indexed address,indexed uint256)
-      handler: handleTransfer
+    - event: __event__
+      handler: __handler__
   file: __source_file_path__
