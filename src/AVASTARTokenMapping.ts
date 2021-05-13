@@ -2,12 +2,12 @@ import { log, BigInt } from '@graphprotocol/graph-ts';
 import { TokenHolder } from "../generated/schema";
 import {
   Transfer
-} from '../generated/WrappedCryptopunks/WrappedCryptopunks';
+} from '../generated/AVASTARToken/AVASTARToken';
 
 export function handleTransfer(event: Transfer): void {
   let id = event.address.toHex() + '#' + event.params.tokenId.toHex();
 
-  log.info('[WrappedCryptopunks] Handle transfer: id: {}, address: {}, tokenId: {}', [id, event.address.toString(), event.params.tokenId.toString()]);
+  log.info('[AVASTARToken] Handle transfer: id: {}, address: {}, tokenId: {}', [id, event.address.toString(), event.params.tokenId.toString()]);
 
   let entity = TokenHolder.load(id);
   if (entity == null) {

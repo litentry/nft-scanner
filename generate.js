@@ -1,8 +1,9 @@
 const _ = require('lodash');
+var axios = require('axios');
 const fs = require('fs');
 const util = require('util');
+const csv = require('csv-parser');
 const yaml = require('js-yaml');
-var axios = require('axios');
 
 /// Load ABI from etherscan
 async function loadABI(contractAddress) {
@@ -18,7 +19,7 @@ function writeABI(path, abi) {
   fs.writeFileSync(path, JSON.stringify(abi));
 }
 
-/// source code configuration
+/// Source code
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
 let compiled = null;
@@ -44,7 +45,7 @@ function writeSource(path, content) {
   fs.writeFileSync(path, content);
 }
 
-/// subgraph configuration
+/// Subgraph
 function loadSubgraphDataSourceTemplate(path) {
   const dataSourceTemplateFp = fs.readFileSync(path, 'utf8');
   const dataSourceTemplate = yaml.load(dataSourceTemplateFp);
@@ -116,6 +117,7 @@ async function run(contract) {
   if (_.isEmpty(interface)) {
     throw new Error(`Event *Transfer* not found`);
   }
+
   writeABI(contract.abi_file_path, abi);
   const [handler, event] = getEventHandlerPair(interface.name, interface.inputs);
   contract.eventHandlers = [{ handler, event }];
@@ -139,34 +141,50 @@ async function sleep(secs) {
   });
 }
 
+async function loadContracts(path) {
+  const results = [];
+  return new Promise(resolve => {
+    fs.createReadStream(path)
+      .pipe(
+        csv({
+          headers: ['name', 'address', 'start_block', 'official_website'],
+          mapValues: ({ header, index, value }) => {
+            if (header === 'name') {
+              return value
+                .trim()
+                .split(' ')
+                .join('');
+            } else if (header === 'start_block') {
+              return parseInt(value.trim(), 10);
+            } else if (header === 'address') {
+              return value.trim().toLowerCase();
+            }
+            return value;
+          },
+          // Ignore the header
+          skipLines: 1,
+        })
+      )
+      .on('data', data => results.push({ network: 'mainnet', ...data }))
+      .on('end', () => {
+        resolve(_.uniqBy(results, 'name'));
+      });
+  });
+}
+
 (async () => {
   try {
-    const contractList = [
-      {
-        name: 'WrappedMoonCatsRescue',
-        address: '0x7c40c393dc0f283f318791d746d894ddd3693572',
-        network: 'mainnet',
-        start_block: 12025810,
-      },
-      {
-        name: 'WrappedCryptoPunks',
-        address: '0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6',
-        network: 'mainnet',
-        start_block: 11566926,
-      },
-      {
-        name: 'CryptoPunks',
-        address: '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB',
-        network: 'mainnet',
-        start_block: 3914495,
-      },
-    ];
-
+    const supportedNftPath = './supportedNFTs.csv';
+    const contractList = await loadContracts(supportedNftPath);
     const dataSourceList = [];
     for (let contract of contractList) {
-      const dataSource = await run(contract);
-      dataSourceList.push(dataSource);
-      await sleep(5);
+      try {
+        const dataSource = await run(contract);
+        dataSourceList.push(dataSource);
+      } catch (e) {
+        console.trace(e);
+      }
+      await sleep(7);
     }
 
     const subgraphPath = './subgraph.yaml';
