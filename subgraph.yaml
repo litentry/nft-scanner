@@ -762,3 +762,25 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/MARBLE_NFTMapping.ts
+
+  - kind: ethereum/contract
+    name: Polkapet
+    network: mainnet
+    source:
+      address: "0x8CB813bf27Dc744Fc5Fb6BA7515504de45d39e08"
+      abi: Polkapet
+      startBlock: 12155513
+      # startBlock: 12785321
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: Polkapet
+          file: ./abis/Polkapet.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/PolkapetMapping.ts
